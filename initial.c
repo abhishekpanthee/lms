@@ -701,6 +701,7 @@ void change_teacher_password() {
 
 void exit_program(){
     system("cls");
+	printf("/n")
     printf("\n\n\t-------------LEAVING ALREADY------------\n");
     printf("\tCreated  by:\n");
     printf("\tABHISHEK PANTHEE\t(080BCT002)\n");
