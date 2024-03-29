@@ -38,7 +38,7 @@ Please adhere to this project's `code of conduct`.
 
 ## Demo
 
-Insert gif or link to demo
+[![Watch the demo ](https://shotcan.com/images/2024/03/29/Screenshot-from-2024-03-30-02-38-08dee2c0cb18682541.png)](https://www.youtube.com/watch?v=DK40s5XDvtI)
 
 
 ## Feedback
