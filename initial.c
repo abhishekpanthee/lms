@@ -2,6 +2,7 @@
 #include<conio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<ctype.h>
 #include"lms.c"
 
 void password_taker(char []);
@@ -15,8 +16,13 @@ void giveassign();
 void seeassign();
 void admindatashow();
 void studentsearch();
+void teachersearch();
 void loginto();
 void tstudentshow();
+void take_attendance_student(char[]);
+void display_attendance_student(char[]);
+void take_attendance_teacher(char[]);
+void display_attendance_teacher(char[]);
 
 struct student {
     char id[10];
@@ -80,9 +86,9 @@ int main(){
 
 
 void reg(){
-	system("cls");
-	signup();
-	
+    system("cls");
+    signup();
+    
     int n;
     printf("\n*1.----------------Administration----------------\n");
     printf("\n*2.---------------------Teacher--------------------\n");
@@ -174,8 +180,8 @@ void reg(){
 }
 
 void loginto() {
-	system("cls");
-	signin();
+    system("cls");
+    signin();
     int n;
     int login, a;
     printf("\n*1. Administration");
@@ -184,7 +190,7 @@ void loginto() {
     printf("\nChoose: ");
     scanf("%d", &n);
     if (n == 1) {
-    	admin();
+        admin();
         struct admin f;
         char id[10];
         char password[10];
@@ -208,9 +214,9 @@ void loginto() {
         fclose(fp);
 
         if (login == 1) {
-        	system("cls");
-        	admin();
-        	admin:
+            system("cls");
+            admin();
+            admin:
             printf("\n1. SHOW STUDENT DATA");
             printf("\n2. SHOW TEACHERS DATA");
             printf("\n3. SEARCH  WITH TEACHER ID");
@@ -224,37 +230,37 @@ void loginto() {
             if (a == 1) {
                 show();
             }
-			 else if (a == 2) {
+             else if (a == 2) {
                 tshow();
-			}
-			 else if (a == 3) {
+            }
+             else if (a == 3) {
                 teachersearch();
             }
-			 else if (a == 4) {
+             else if (a == 4) {
                 studentsearch();
             }
-			 else if (a == 5) {
+             else if (a == 5) {
                 change_student_password();
             }
-			 else if (a == 6) {
+             else if (a == 6) {
                 change_teacher_password();
             }
-			 else if (a == 7) {
+             else if (a == 7) {
                 admindatashow();
             }
-			 else if (a == 8) {
+             else if (a == 8) {
                 main();
             }
-			 else {
+             else {
                 printf("\n***WRONG INPUT***\n");
             }
             goto admin;
         }
-		 else {
+         else {
             printf("\nWRONG USERNAME/PASSWORD\n\n");
         }
     }
-	else if (n == 2) {
+    else if (n == 2) {
     student();
     struct student s;
     char id[10];
@@ -289,7 +295,9 @@ void loginto() {
             student_menu:
             printf("\n1. Show Teacher Subjects And Names");
             printf("\n2. Show Assignments");
-            printf("\n3. Exit");
+            printf("\n3. Take Attendance");
+            printf("\n4. Display Attendance");
+            printf("\n5. Exit");
             printf("\nChoose: ");
             scanf("%d", &a);
             if (a == 1) {
@@ -297,13 +305,17 @@ void loginto() {
             } else if (a == 2) {
                 seeassign();
             } else if (a == 3) {
+                take_attendance_student(id);
+            } else if (a == 4) {
+                display_attendance_student(id);
+            } else if (a == 5) {
                 main();
             } else {
                 printf("\n-----Wrong Choice-------\n\n");
                 goto student_menu;
             }
        goto student_menu;
-	    }
+        }
         
     }
 }
@@ -344,7 +356,9 @@ else if (n == 3) {
             printf("\n2. GIVE ASSIGNMENTS");
             printf("\n3. SEARCH WITH STUDENT ID");
             printf("\n4. CHANGE YOUR STUDENT PASSWORD");
-            printf("\n5. EXIT");
+            printf("\n5. Take Attendance");
+            printf("\n6. Display Attendance");
+            printf("\n7. EXIT");
             printf("\nChoose: ");
             scanf("%d", &a);
             if (a == 1) {
@@ -356,6 +370,10 @@ else if (n == 3) {
             } else if (a == 4) {
                 change_student_password();
             } else if (a == 5) {
+                take_attendance_teacher(id);
+            } else if (a == 6) {
+                display_attendance_teacher(id);
+            } else if (a == 7) {
                 main();
             } else {
                 printf("\n-----Wrong Choice-------\n\n");
@@ -369,7 +387,6 @@ else if (n == 3) {
 }
 }
 
-
 void show(){
     int i=1;
     FILE *fp;
@@ -381,9 +398,9 @@ void show(){
 
     printf("\nSTUDENT DATA :- \n");
     while(fread(&s,sizeof(s),1,fp)){
-    		printf("-------------------------------------------------------------------------------------------\n");
-    	printf("S.N \t ID \t \t NAME \t \t NUMBER \t  FACULTY \tPASSWORD \n ");
-    	printf("-----------------------------------------------------------------------------------------------\n");
+            printf("-------------------------------------------------------------------------------------------\n");
+        printf("S.N \t ID \t \t NAME \t \t NUMBER \t  FACULTY \tPASSWORD \n ");
+        printf("-----------------------------------------------------------------------------------------------\n");
         printf("%d\t%s\t\t%s\t+977%s \t    %s\t  %s\n",i,s.id,s.name,s.num,s.faculty,s.password);
         printf("------------------------------------------------------------------------------------------------\n");
         i++;
@@ -402,9 +419,9 @@ void tshow(){
 
     printf("\nTeachers data :- \n");
     while(fread(&f,sizeof(f),1,fp)){
-    	printf("--------------------------------------------------------------------------------------------------\n");
-    	printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t PASSWORD \n  ");
-    	printf("--------------------------------------------------------------------------------------------------\n");
+        printf("--------------------------------------------------------------------------------------------------\n");
+        printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t PASSWORD \n  ");
+        printf("--------------------------------------------------------------------------------------------------\n");
         printf("%d\t%s\t\t%s\t\t+977%s \t %s \t  %s\n",i,f.id,f.name,f.num,f.sub,f.password);
         printf("--------------------------------------------------------------------------------------------------\n");
         i++;
@@ -423,9 +440,9 @@ void tstudentshow(){
 
     printf("\nTeachers data :- \n");
     while(fread(&f,sizeof(f),1,fp)){
-    	printf("--------------------------------------------------------------------------------------------------\n");
-    	printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t  \n  ");
-    	printf("--------------------------------------------------------------------------------------------------\n");
+        printf("--------------------------------------------------------------------------------------------------\n");
+        printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t  \n  ");
+        printf("--------------------------------------------------------------------------------------------------\n");
         printf("%d\t%s\t\t%s\t\t+977%s \t %s \n",i,f.id,f.name,f.num,f.sub);
         printf("--------------------------------------------------------------------------------------------------\n");
         i++;
@@ -439,11 +456,11 @@ void admindatashow(){
 
     int i=1;
     while(fread(&f , sizeof(f),1,fp)){
-    	printf("-------------------------------------------------------------\n");
-    	printf("S.N\t ID\t NAME \n  ");
-    	printf("-------------------------------------------------------------\n");
+        printf("-------------------------------------------------------------\n");
+        printf("S.N\t ID\t NAME \n  ");
+        printf("-------------------------------------------------------------\n");
         printf("%d\t%s\t %s\n",i,f.id,f.name);
-       	printf("-------------------------------------------------------------\n");
+        printf("-------------------------------------------------------------\n");
         i++;
     }
     fclose(fp);
@@ -572,7 +589,7 @@ void seeassign() {
 }
 
 void studentsearch(){
-	int i=1;
+    int i=1;
     struct student s;
     FILE *fp;
     fp=fopen("stu.txt","r");
@@ -582,10 +599,10 @@ void studentsearch(){
     int found=0;
     while(fread(&s,sizeof(s),1,fp)){
         if(strcmp(id,s.id)==0){
-       	found=1;
-       	printf("-----------------------------------------------------------------------------------------\n");
-    	printf("S.N \t ID \t \t NAME \t \t NUMBER \t  FACULTY \tPASSWORD \n  ");
-    	printf("-----------------------------------------------------------------------------------------\n");
+        found=1;
+        printf("-----------------------------------------------------------------------------------------\n");
+        printf("S.N \t ID \t \t NAME \t \t NUMBER \t  FACULTY \tPASSWORD \n  ");
+        printf("-----------------------------------------------------------------------------------------\n");
         printf("%d\t%s\t\t%s\t+977%s \t    %s\t  %s\n",i,s.id,s.name,s.num,s.faculty,s.password);
         printf("-----------------------------------------------------------------------------------------\n");
         i++;
@@ -596,7 +613,7 @@ void studentsearch(){
     }
 }
 void teachersearch(){
-	int i=1;
+    int i=1;
     struct teach s;
     FILE *fp;
     fp=fopen("teacher.txt","r");
@@ -607,9 +624,9 @@ void teachersearch(){
     while(fread(&s,sizeof(s),1,fp)){
         if(strcmp(id,s.id)==0){
             found=1;
-           	printf("------------------------------------------------------------------------------------------------\n");
-    	printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t PASSWORD \n   ");
-    	printf("-----------------------------------------------------------------------------------------------------\n");
+            printf("------------------------------------------------------------------------------------------------\n");
+        printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t PASSWORD \n   ");
+        printf("-----------------------------------------------------------------------------------------------------\n");
         printf("%d\t%s\t\t%s\t\t+977%s \t %s \t  %s\n",i,s.id,s.name,s.num,s.sub,s.password);
         printf("-----------------------------------------------------------------------------------------------------\n");
         i++;
@@ -651,17 +668,16 @@ void change_student_password() {
     fclose(fp);
     fclose(temp_fp);
 
-    if (!found) {
-        printf("\nStudent with ID %s not found.\n", id);
-        remove("temp.txt"); // Delete temporary file
+    remove("stu.txt");
+    rename("temp.txt", "stu.txt");
+
+    if (found) {
+        printf("\nPassword changed successfully for student with ID %s.\n", id);
     } else {
-        if (remove("stu.txt") == 0 && rename("temp.txt", "stu.txt") == 0) {
-            printf("\nPassword changed successfully for student %s.\n", s.name);
-        } else {
-            printf("\n**ERROR IN CHANGING PASSWORD**");
-        }
+        printf("\nStudent with ID %s not found.\n", id);
     }
 }
+
 void change_teacher_password() {
     char id[10];
     char new_password[10];
@@ -669,7 +685,7 @@ void change_teacher_password() {
     printf("\nEnter the ID of the teacher whose password you want to change: ");
     scanf("%s", id);
 
-    struct teach f;
+    struct teach t;
     FILE *fp, *temp_fp;
     fp = fopen("teacher.txt", "r");
     temp_fp = fopen("temp.txt", "w");
@@ -679,63 +695,155 @@ void change_teacher_password() {
     }
 
     int found = 0;
-    while (fread(&f, sizeof(f), 1, fp)) {
-        if (strcmp(id, f.id) == 0) {
+    while (fread(&t, sizeof(t), 1, fp)) {
+        if (strcmp(id, t.id) == 0) {
             found = 1;
-            printf("\nEnter the new password for teacher %s: ", f.name);
+            printf("\nEnter the new password for teacher %s: ", t.name);
             scanf("%s", new_password);
-            strcpy(f.password, new_password);
+            strcpy(t.password, new_password);
         }
-        fwrite(&f, sizeof(f), 1, temp_fp);
+        fwrite(&t, sizeof(t), 1, temp_fp);
     }
 
     fclose(fp);
     fclose(temp_fp);
 
-    if (!found) {
-        printf("\nTeacher with ID %s not found.\n", id);
-        remove("temp.txt"); // Delete temporary file
+    remove("teacher.txt");
+    rename("temp.txt", "teacher.txt");
+
+    if (found) {
+        printf("\nPassword changed successfully for teacher with ID %s.\n", id);
     } else {
-        if (remove("teacher.txt") == 0 && rename("temp.txt", "teacher.txt") == 0) {
-            printf("\nPassword changed successfully for teacher %s.\n", f.name);
-        } else {
-            printf("\n**ERROR IN CHANGING PASSWORD**");
-        }
+        printf("\nTeacher with ID %s not found.\n", id);
     }
 }
 
-void password_taker(char password[]){
- //subtitiuitng every charcter by *
+void password_taker(char password[]) {
+    char ch;
+    int i = 0;
 
-    char ch;        
-    int charposition=0;  
-
-    while(1)
-    {
-        ch=getch();
-        if (ch==13){     
-            password[charposition]='\0';
+    while (1) {
+        ch = getch(); 
+        if (ch == 13) { // Enter key
+            password[i] = '\0';
             break;
-        }
-        else if (ch==8)       // if user enters backspace, it will delete current character
-            {
-                if (charposition >0)
-                {
-                    charposition--;
-                    password[charposition]='\0';
-                    printf("\b \b");
-                }
+        } else if (ch == 8) { // Backspace
+            if (i > 0) {
+                i--;
+                printf("\b \b"); 
             }
-            else if (ch==32 || ch==9)    // if user enters tab or space
-                continue;
-            else{
-                password[charposition]=ch;
-                charposition++;
-                printf("*");
-                }
+        } else {
+            password[i++] = ch;
+            printf("*"); 
+        }
     }
 }
 
+void take_attendance_student(char id[]) {
+    FILE *fp;
+    fp = fopen("attendance_student.txt", "a");
+
+    if (fp == NULL) {
+        printf("\n**ERROR IN OPENING FILE**\n\n");
+        return;
+    }
+
+    char attendance;
+    printf("\nPresent (P) or Absent (A): ");
+    scanf(" %c", &attendance);
+
+    fprintf(fp, "%s %c\n", id, attendance);
+
+    fclose(fp);
+}
+
+void display_attendance_student(char id[]) {
+    FILE *fp;
+    fp = fopen("attendance_student.txt", "r");
+
+    if (fp == NULL) {
+        printf("\n**ERROR IN OPENING FILE**\n\n");
+        return;
+    }
+
+    char student_id[10];
+    char attendance;
+    int total_classes = 0, present = 0, absent = 0;
+
+    while (fscanf(fp, "%s %c", student_id, &attendance) != EOF) {
+        if (strcmp(id, student_id) == 0) {
+            total_classes++;
+            if (attendance == 'P') {
+                present++;
+            } else if (attendance == 'A') {
+                absent++;
+            }
+        }
+    }
+
+    fclose(fp);
+
+    if (total_classes == 0) {
+        printf("\nNo attendance records found for student with ID %s.\n", id);
+    } else {
+        printf("\nTotal classes: %d\n", total_classes);
+        printf("Present: %d\n", present);
+        printf("Absent: %d\n", absent);
+    }
+}
+
+void take_attendance_teacher(char id[]) {
+    FILE *fp;
+    fp = fopen("attendance_teacher.txt", "a");
+
+    if (fp == NULL) {
+        printf("\n**ERROR IN OPENING FILE**\n\n");
+        return;
+    }
+
+    char attendance;
+    printf("\nPresent (P) or Absent (A): ");
+    scanf(" %c", &attendance);
+
+    fprintf(fp, "%s %c\n", id, attendance);
+
+    fclose(fp);
+}
+
+void display_attendance_teacher(char id[]) {
+    FILE *fp;
+    fp = fopen("attendance_teacher.txt", "r");
+
+    if (fp == NULL) {
+        printf("\n**ERROR IN OPENING FILE**\n\n");
+        return;
+    }
+
+    char teacher_id[10];
+    char attendance;
+    int total_classes = 0, present = 0, absent = 0;
+
+    while (fscanf(fp, "%s %c", teacher_id, &attendance) != EOF) {
+        if (strcmp(id, teacher_id) == 0) {
+            total_classes++;
+            if (attendance == 'P') {
+                present++;
+            } else if (attendance == 'A') {
+                absent++;
+            }
+        }
+    }
+
+    fclose(fp);
+
+    if (total_classes == 0) {
+        printf("\nNo attendance records found for teacher with ID %s.\n", id);
+    } else {
+        printf("\nTotal classes: %d\n", total_classes);
+        printf("Present: %d\n", present);
+        printf("Absent: %d\n", absent);
+    }
+}
 
 void exit_program(){
     system("cls");
