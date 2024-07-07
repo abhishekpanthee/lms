@@ -1,29 +1,11 @@
-#include<stdio.h>
-#include<conio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<ctype.h>
-#include"lms.c"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <unistd.h> // for getpass()
 
-void password_taker(char []);
-void exit_program();
-void change_student_password();
-void change_teacher_password();
-void reg();
-void show();
-void tshow();
-void giveassign();
-void seeassign();
-void admindatashow();
-void studentsearch();
-void teachersearch();
-void loginto();
-void tstudentshow();
-void take_attendance_student(char[]);
-void display_attendance_student(char[]);
-void take_attendance_teacher(char[]);
-void display_attendance_teacher(char[]);
-
+// Define structure for student, admin, teacher, and assignments
 struct student {
     char id[10];
     char password[10];
@@ -55,214 +37,202 @@ struct assign {
     char sub6[100];
 };
 
-int main(){
-    int n=1;
-    system("cls");
-    lms();
+// Function prototypes
+void password_taker(char []);
+void exit_program();
+void change_student_password();
+void change_teacher_password();
+void reg();
+void show_students();
+void show_teachers();
+void give_assignment();
+void see_assignment();
+void admin_data_show();
+void search_student();
+void search_teacher();
+void login();
 
-    while(n!=0){
+// Main function
+int main() {
+    int choice;
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    login();
+
+    while (true) {
         printf("\n\n***WELCOME TO LMS***");
-        printf("\n1.SIGN IN\n2.SIGN UP\n\n0.Exit\n");
-        printf("\nChoose : \n");
-        scanf("%d",&n);
-        char password[10];
-        if(n==2){
-            reg();
-        }
-        else if(n==1){
-            loginto();
-        }
+        printf("\n1. SIGN IN\n2. SIGN UP\n\n0. Exit\n");
+        printf("\nChoose : ");
+        scanf("%d", &choice);
 
-        else if (n==0){
-            exit_program();
-        }
-        else{
-            printf("\n*****_WRONG_INPUT_*****\n");
-
+        switch (choice) {
+            case 1:
+                login();
+                break;
+            case 2:
+                reg();
+                break;
+            case 0:
+                exit_program();
+                break;
+            default:
+                printf("\n*****_WRONG_INPUT_*****\n");
+                break;
         }
     }
+
     return 0;
 }
 
+// Function definitions
 
-void reg(){
-    system("cls");
-    signup();
-    
-    int n;
-    printf("\n*1.----------------Administration----------------\n");
-    printf("\n*2.---------------------Teacher--------------------\n");
-    printf("\n*3.---------------------Student--------------------\n");
-    printf("\nChoose : \n");
-    scanf("%d", &n);
+// Function to handle user login
+void login() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    printf("\n**1. Administration**");
+    printf("\n**2. Teacher**");
+    printf("\n**3. Student**");
+    printf("\nChoose: ");
 
-    if(n == 3){
-        struct student f;
-        FILE *fp;
-        student();
-        fp = fopen("stu.txt","a");
-        if(fp == NULL){
-            printf("\nError opening file.");
-            return;
-        }
+    int choice;
+    scanf("%d", &choice);
 
-        printf("Enter ID: ");
-        scanf("%s", f.id);
-
-        printf("\nEnter Password: ");
-        password_taker(f.password);
-
-        printf("\n\nEnter Name: ");
-        scanf("%s", f.name);
-
-        printf("\nEnter Phone Number: ");
-        scanf("%s", f.num);
-
-        printf("\nEnter Your Faculty: ");
-        scanf("%s", f.faculty);
-
-        fwrite(&f, sizeof(f), 1, fp);
-        fclose(fp);
-    }
-    else if(n == 1){
-        struct admin f;
-        FILE *fp;
-        admin();
-        fp = fopen("adm.txt","a");
-        if(fp == NULL){
-            printf("\nError opening file.");
-            return;
-        }
-
-        printf("\nEnter ID: ");
-        scanf("%s", f.id);
-
-        printf("\nEnter Password: ");
-        password_taker(f.password);
-
-        printf("\n\n Enter Name: ");
-        scanf("%s", f.name);
-
-        fwrite(&f, sizeof(f), 1, fp);
-        fclose(fp);
-    }
-    else if(n == 2){
-        struct teach f;
-        FILE *fp;
-        teacher();
-        fp = fopen("teacher.txt","a");
-        if(fp == NULL){
-            printf("\nError opening file.");
-            return;
-        }
-
-        printf("\nEnter ID: ");
-        scanf("%s", f.id);
-
-        printf("\nEnter your subject: ");
-        scanf("%s", f.sub);
-
-        printf("\nEnter phone number: ");
-        scanf("%s", f.num);
-
-        printf("\nEnter Password: ");
-        password_taker(f.password);
-
-        printf("\n\nEnter Name: ");
-        scanf("%s", f.name);
-
-        fwrite(&f, sizeof(f), 1, fp);
-        fclose(fp);
-    }
-    else{
-        printf("\nInvalid choice.");
+    switch (choice) {
+        case 1:
+            admin();
+            break;
+        case 2:
+            teacher();
+            break;
+        case 3:
+            student();
+            break;
+        default:
+            printf("\n***WRONG INPUT***\n");
+            break;
     }
 }
 
-void loginto() {
-    system("cls");
-    signin();
-    int n;
-    int login, a;
-    printf("\n*1. Administration");
-    printf("\n*2. Student");
-    printf("\n*3. Teacher");
+// Function to handle user registration
+void reg() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signup();
+
+    int choice;
+    printf("\n**1. Administration**");
+    printf("\n**2. Teacher**");
+    printf("\n**3. Student**");
     printf("\nChoose: ");
-    scanf("%d", &n);
-    if (n == 1) {
-        admin();
-        struct admin f;
-        char id[10];
-        char password[10];
+    scanf("%d", &choice);
 
-        printf("\nEnter ID: ");
-        scanf("%s", id);
-        printf("\nEnter Password: ");
-        password_taker(password);
-
-        FILE *fp;
-        fp = fopen("adm.txt", "r");
-        if (fp == NULL) {
-            printf("\n**ERROR IN READING DATA**");
-        }
-        while (fread(&f, sizeof(f), 1, fp)) {
-            if (strcmp(password, f.password) == 0 && strcmp(id, f.id) == 0) {
-                printf("\n**LOGGED IN**\\n\n\n");
-                login = 1;
-            }
-        }
-        fclose(fp);
-
-        if (login == 1) {
-            system("cls");
-            admin();
-            admin:
-            printf("\n1. SHOW STUDENT DATA");
-            printf("\n2. SHOW TEACHERS DATA");
-            printf("\n3. SEARCH  WITH TEACHER ID");
-            printf("\n4. SEARCH WITH STUDENT ID");
-            printf("\n5. Change student password");
-            printf("\n6. Change Teacher Password");
-            printf("\n7. Show Admin Data");
-            printf("\n8. EXIT");
-            printf("\nChoose: ");
-            scanf("%d", &a);
-            if (a == 1) {
-                show();
-            }
-             else if (a == 2) {
-                tshow();
-            }
-             else if (a == 3) {
-                teachersearch();
-            }
-             else if (a == 4) {
-                studentsearch();
-            }
-             else if (a == 5) {
-                change_student_password();
-            }
-             else if (a == 6) {
-                change_teacher_password();
-            }
-             else if (a == 7) {
-                admindatashow();
-            }
-             else if (a == 8) {
-                main();
-            }
-             else {
-                printf("\n***WRONG INPUT***\n");
-            }
-            goto admin;
-        }
-         else {
-            printf("\nWRONG USERNAME/PASSWORD\n\n");
-        }
+    switch (choice) {
+        case 1:
+            register_admin();
+            break;
+        case 2:
+            register_teacher();
+            break;
+        case 3:
+            register_student();
+            break;
+        default:
+            printf("\nInvalid choice.\n");
+            break;
     }
-    else if (n == 2) {
+}
+
+// Function to register an administrator
+void register_admin() {
+    struct admin f;
+    FILE *fp;
+    admin();
+
+    fp = fopen("adm.txt", "a");
+    if (fp == NULL) {
+        printf("\nError opening file.");
+        return;
+    }
+
+    printf("\nEnter ID: ");
+    scanf("%s", f.id);
+
+    printf("\nEnter Password: ");
+    password_taker(f.password);
+
+    printf("\nEnter Name: ");
+    scanf("%s", f.name);
+
+    fwrite(&f, sizeof(f), 1, fp);
+    fclose(fp);
+}
+
+// Function to register a teacher
+void register_teacher() {
+    struct teach f;
+    FILE *fp;
+    teacher();
+
+    fp = fopen("teacher.txt", "a");
+    if (fp == NULL) {
+        printf("\nError opening file.");
+        return;
+    }
+
+    printf("\nEnter ID: ");
+    scanf("%s", f.id);
+
+    printf("\nEnter your subject: ");
+    scanf("%s", f.sub);
+
+    printf("\nEnter phone number: ");
+    scanf("%s", f.num);
+
+    printf("\nEnter Password: ");
+    password_taker(f.password);
+
+    printf("\nEnter Name: ");
+    scanf("%s", f.name);
+
+    fwrite(&f, sizeof(f), 1, fp);
+    fclose(fp);
+}
+
+// Function to register a student
+void register_student() {
+    struct student f;
+    FILE *fp;
     student();
-    struct student s;
+
+    fp = fopen("stu.txt", "a");
+    if (fp == NULL) {
+        printf("\nError opening file.");
+        return;
+    }
+
+    printf("\nEnter ID: ");
+    scanf("%s", f.id);
+
+    printf("\nEnter Password: ");
+    password_taker(f.password);
+
+    printf("\nEnter Name: ");
+    scanf("%s", f.name);
+
+    printf("\nEnter Phone Number: ");
+    scanf("%s", f.num);
+
+    printf("\nEnter Your Faculty: ");
+    scanf("%s", f.faculty);
+
+    fwrite(&f, sizeof(f), 1, fp);
+    fclose(fp);
+}
+
+// Function to handle admin operations after login
+void admin() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    struct admin f;
     char id[10];
     char password[10];
 
@@ -272,58 +242,37 @@ void loginto() {
     password_taker(password);
 
     FILE *fp;
-    fp = fopen("stu.txt", "r");
+    fp = fopen("adm.txt", "r");
     if (fp == NULL) {
-        printf("\n**ERROR IN READING DATA**\n\n");
-    } else {
-        int login = 0;
-        while (fread(&s, sizeof(s), 1, fp)) {
-            if (strcmp(password, s.password) == 0 && strcmp(id, s.id) == 0) {
-                printf("\n\n\n**LOGGED IN**\n\n\n");
-                login = 1;
-                break;
-            }
-        }
-        fclose(fp);
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
 
-        if (login != 1) {
-            printf("\nWRONG USERNAME/PASSWORD");
-        } else {
-            system("cls");
-            student();
-            int a;
-            student_menu:
-            printf("\n1. Show Teacher Subjects And Names");
-            printf("\n2. Show Assignments");
-            printf("\n3. Take Attendance");
-            printf("\n4. Display Attendance");
-            printf("\n5. Exit");
-            printf("\nChoose: ");
-            scanf("%d", &a);
-            if (a == 1) {
-                tstudentshow();
-            } else if (a == 2) {
-                seeassign();
-            } else if (a == 3) {
-                take_attendance_student(id);
-            } else if (a == 4) {
-                display_attendance_student(id);
-            } else if (a == 5) {
-                main();
-            } else {
-                printf("\n-----Wrong Choice-------\n\n");
-                goto student_menu;
-            }
-       goto student_menu;
+    int login = 0;
+    while (fread(&f, sizeof(f), 1, fp)) {
+        if (strcmp(password, f.password) == 0 && strcmp(id, f.id) == 0) {
+            printf("\n**LOGGED IN**\n\n");
+            login = 1;
+            break;
         }
-        
+    }
+    fclose(fp);
+
+    if (login == 1) {
+        admin_menu();
+    } else {
+        printf("\nWRONG USERNAME/PASSWORD\n\n");
     }
 }
-else if (n == 3) {
+
+// Function to handle teacher operations after login
+void teacher() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
     struct teach f;
     char id[10];
     char password[10];
-    teacher();
 
     printf("\nEnter ID: ");
     scanf("%s", id);
@@ -333,526 +282,421 @@ else if (n == 3) {
     FILE *fp;
     fp = fopen("teacher.txt", "r");
     if (fp == NULL) {
-        printf("\n**ERROR IN READING DATA**\n\n");
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    int login = 0;
+    while (fread(&f, sizeof(f), 1, fp)) {
+        if (strcmp(password, f.password) == 0 && strcmp(id, f.id) == 0) {
+            printf("\n**LOGGED IN**\n\n");
+            login = 1;
+            break;
+        }
+    }
+    fclose(fp);
+
+    if (login == 1) {
+        teacher_menu();
     } else {
-        int login = 0; // Initialize login flag
-        while (fread(&f, sizeof(f), 1, fp)) {
-            if (strcmp(password, f.password) == 0 && strcmp(id, f.id) == 0) {
-                printf("\n\n\n**LOGGED IN**\n\n");
-                login = 1;
-                break;
-            }
-        }
-        fclose(fp);
-
-        if (login != 1) {
-            printf("\nWRONG USERNAME/PASSWORD\n\n");
-        } else {
-            system("cls");
-            teacher();
-            int a;
-            teacher_menu:
-            printf("\n1. SHOW STUDENTS DETAILS");
-            printf("\n2. GIVE ASSIGNMENTS");
-            printf("\n3. SEARCH WITH STUDENT ID");
-            printf("\n4. CHANGE YOUR STUDENT PASSWORD");
-            printf("\n5. Take Attendance");
-            printf("\n6. Display Attendance");
-            printf("\n7. EXIT");
-            printf("\nChoose: ");
-            scanf("%d", &a);
-            if (a == 1) {
-                show();
-            } else if (a == 2) {
-                giveassign();
-            } else if (a == 3) {
-                studentsearch();
-            } else if (a == 4) {
-                change_student_password();
-            } else if (a == 5) {
-                take_attendance_teacher(id);
-            } else if (a == 6) {
-                display_attendance_teacher(id);
-            } else if (a == 7) {
-                main();
-            } else {
-                printf("\n-----Wrong Choice-------\n\n");
-                goto teacher_menu;
-            }
-            goto teacher_menu;
-        }
+        printf("\nWRONG USERNAME/PASSWORD\n\n");
     }
-} else {
-    printf("\n***WRONG INPUT***");
-}
 }
 
-void show(){
-    int i=1;
-    FILE *fp;
+// Function to handle student operations after login
+void student() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
     struct student s;
-    fp=fopen("stu.txt","r");
-    if(fp==NULL){
-        printf("\n**ERROR IN READING DATA**");
-    }
-
-    printf("\nSTUDENT DATA :- \n");
-    while(fread(&s,sizeof(s),1,fp)){
-            printf("-------------------------------------------------------------------------------------------\n");
-        printf("S.N \t ID \t \t NAME \t \t NUMBER \t  FACULTY \tPASSWORD \n ");
-        printf("-----------------------------------------------------------------------------------------------\n");
-        printf("%d\t%s\t\t%s\t+977%s \t    %s\t  %s\n",i,s.id,s.name,s.num,s.faculty,s.password);
-        printf("------------------------------------------------------------------------------------------------\n");
-        i++;
-    }
-    fclose(fp);
-}
-void tshow(){
-
-    int  i=1;
-    FILE *fp;
-    struct teach f;
-    fp=fopen("teacher.txt","r");
-    if(fp==NULL){
-        printf("\n**ERROR IN READING DATA**");
-    }
-
-    printf("\nTeachers data :- \n");
-    while(fread(&f,sizeof(f),1,fp)){
-        printf("--------------------------------------------------------------------------------------------------\n");
-        printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t PASSWORD \n  ");
-        printf("--------------------------------------------------------------------------------------------------\n");
-        printf("%d\t%s\t\t%s\t\t+977%s \t %s \t  %s\n",i,f.id,f.name,f.num,f.sub,f.password);
-        printf("--------------------------------------------------------------------------------------------------\n");
-        i++;
-    }
-    fclose(fp);
-}
-void tstudentshow(){
-
-    int  i=1;
-    FILE *fp;
-    struct teach f;
-    fp=fopen("teacher.txt","r");
-    if(fp==NULL){
-        printf("\n**ERROR IN READING DATA**");
-    }
-
-    printf("\nTeachers data :- \n");
-    while(fread(&f,sizeof(f),1,fp)){
-        printf("--------------------------------------------------------------------------------------------------\n");
-        printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t  \n  ");
-        printf("--------------------------------------------------------------------------------------------------\n");
-        printf("%d\t%s\t\t%s\t\t+977%s \t %s \n",i,f.id,f.name,f.num,f.sub);
-        printf("--------------------------------------------------------------------------------------------------\n");
-        i++;
-    }
-    fclose(fp);
-}
-void admindatashow(){
-    struct admin f;
-    FILE *fp;
-    fp=fopen("adm.txt","r");
-
-    int i=1;
-    while(fread(&f , sizeof(f),1,fp)){
-        printf("-------------------------------------------------------------\n");
-        printf("S.N\t ID\t NAME \n  ");
-        printf("-------------------------------------------------------------\n");
-        printf("%d\t%s\t %s\n",i,f.id,f.name);
-        printf("-------------------------------------------------------------\n");
-        i++;
-    }
-    fclose(fp);
-}
-void giveassign() {
-    struct assign n;
-    FILE *fp;
-    fp = fopen("assign.txt", "a");
-
-    if (fp == NULL) {
-        printf("\n**ERROR IN OPENING FILE**\n\n");
-        return;
-    }
-
-    int s;
-    printf("\nSubjects: \n  Physics -1 \n Workshop -2 \n Chemistry -3 \n C-Programming  -4 \n Fundamentals of Electrical and Electronics -5 \n  Maths -6  \n Choose: ");
-    scanf("%d", &s);
-
-    if (s < 1 || s > 6) {
-        printf("\nInvalid Input\n");
-        fclose(fp);
-        return;
-    }
-
-    char subject[200];
-    switch (s) {
-        case 1:
-            strcpy(subject, "Physics");
-            break;
-        case 2:
-            strcpy(subject, "Workshop");
-            break;
-        case 3:
-            strcpy(subject, "Chemistry");
-            break;
-        case 4:
-            strcpy(subject, "C-programming");
-            break;
-        case 5:
-            strcpy(subject, "Fundamentals of Electrical and Electronics");
-            break;
-        case 6:
-            strcpy(subject, "Maths");
-            break;
-        default:
-            printf("\nInvalid Input\n");
-            fclose(fp);
-            return;
-    }
-
-    printf("\nEnter Assignments for %s: ", subject);
-    fflush(stdin);
-    fgets(n.sub1, sizeof(n.sub1), stdin);
-    fprintf(fp, "%s: %s\n", subject, n.sub1);
-
-    printf("\n!!!DATA HAS BEEN SHARED!!!\n");
-    fclose(fp);
-}
-
-void seeassign() {
-    FILE *fp;
-    fp = fopen("assign.txt", "r");
-
-    if (fp == NULL) {
-        printf("\n**ERROR IN OPENING FILE**\n\n");
-        return;
-    }
-
-    struct assign n;
-    int s;
-    printf("\nSubjects: \n  Physics -1 \n Workshop -2 \n Chemistry -3 \n C-Programming  -4 \n Fundamentals of Electrical and Electronics -5 \n  Maths -6  \n Choose: ");
-    scanf("%d", &s);
-
-    if (s < 1 || s > 6) {
-        printf("\nError Input\n");
-        fclose(fp);
-        return;
-    }
-
-    char subject[200];
-    switch (s) {
-        case 1:
-            strcpy(subject, "Physics");
-            break;
-        case 2:
-            strcpy(subject, "Workshop");
-            break;
-        case 3:
-            strcpy(subject, "Chemistry");
-            break;
-        case 4:
-            strcpy(subject, "C-programming");
-            break;
-        case 5:
-            strcpy(subject, "Fundamentals of Electrical and Electronics");
-            break;
-        case 6:
-            strcpy(subject, "Maths");
-            break;
-        default:
-            printf("\nError Input\n");
-            fclose(fp);
-            return;
-    }
-
-    printf("\nAssignments for %s:\n", subject);
-
-    int found = 0;
-    char line[200];
-    while (fgets(line, sizeof(line), fp) != NULL) {
-        char *assignment = strstr(line, ":");
-        if (assignment != NULL) {
-            *assignment = '\0'; 
-            if (strcmp(line, subject) == 0) {
-                printf("%s", assignment + 1); 
-                found = 1;
-            }
-        }
-    }
-
-    if (!found) {
-        printf("\nNo assignments found for the selected subject.\n");
-    }
-
-    fclose(fp);
-}
-
-void studentsearch(){
-    int i=1;
-    struct student s;
-    FILE *fp;
-    fp=fopen("stu.txt","r");
     char id[10];
-    printf("\nEnter ID To Search : ");
-    scanf("%s",&id);
-    int found=0;
-    while(fread(&s,sizeof(s),1,fp)){
-        if(strcmp(id,s.id)==0){
-        found=1;
-        printf("-----------------------------------------------------------------------------------------\n");
-        printf("S.N \t ID \t \t NAME \t \t NUMBER \t  FACULTY \tPASSWORD \n  ");
-        printf("-----------------------------------------------------------------------------------------\n");
-        printf("%d\t%s\t\t%s\t+977%s \t    %s\t  %s\n",i,s.id,s.name,s.num,s.faculty,s.password);
-        printf("-----------------------------------------------------------------------------------------\n");
-        i++;
-        }
-    }
-    if(found==0){
-        printf("\n*Data_Not_Found");
-    }
-}
-void teachersearch(){
-    int i=1;
-    struct teach s;
-    FILE *fp;
-    fp=fopen("teacher.txt","r");
-    char id[10];
-    printf("\nEnter ID To Search : ");
-    scanf("%s",&id);
-    int found=0;
-    while(fread(&s,sizeof(s),1,fp)){
-        if(strcmp(id,s.id)==0){
-            found=1;
-            printf("------------------------------------------------------------------------------------------------\n");
-        printf("S.N \t ID\t\t NAME \t\t NUMBER \t SUBJECT \t PASSWORD \n   ");
-        printf("-----------------------------------------------------------------------------------------------------\n");
-        printf("%d\t%s\t\t%s\t\t+977%s \t %s \t  %s\n",i,s.id,s.name,s.num,s.sub,s.password);
-        printf("-----------------------------------------------------------------------------------------------------\n");
-        i++;
-        }
-    }
-    if(found==0){
-        printf("\n*Data_Not_Found\n \n ");
-    }
-}
+    char password[10];
 
- 
-void change_student_password() {
-    char id[10];
-    char new_password[10];
-
-    printf("\nEnter the ID of the student whose password you want to change: ");
+    printf("\nEnter ID: ");
     scanf("%s", id);
+    printf("\nEnter Password: ");
+    password_taker(password);
 
-    struct student s;
-    FILE *fp, *temp_fp;
+    FILE *fp;
     fp = fopen("stu.txt", "r");
-    temp_fp = fopen("temp.txt", "w");
-    if (fp == NULL || temp_fp == NULL) {
-        printf("\n**ERROR IN READING/WRITING DATA**");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    int login = 0;
+    while (fread(&s, sizeof(s), 1, fp)) {
+        if (strcmp(password, s.password) == 0 && strcmp(id, s.id) == 0) {
+            printf("\n**LOGGED IN**\n\n");
+            login = 1;
+            break;
+        }
+    }
+    fclose(fp);
+
+    if (login == 1) {
+        student_menu();
+    } else {
+        printf("\nWRONG USERNAME/PASSWORD\n\n");
+    }
+}
+
+// Admin menu function
+void admin_menu() {
+    int choice;
+    admin:
+
+    printf("\n1. SHOW STUDENT DATA");
+    printf("\n2. SHOW TEACHER DATA");
+    printf("\n3. CHANGE STUDENT PASSWORD");
+    printf("\n4. CHANGE TEACHER PASSWORD");
+    printf("\n5. GIVE ASSIGNMENT");
+    printf("\n6. SHOW ASSIGNMENT");
+    printf("\n7. SHOW ADMIN DATA");
+    printf("\n8. SEARCH STUDENT");
+    printf("\n9. SEARCH TEACHER");
+    printf("\n\n0. Exit\n");
+
+    printf("\nChoose: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            show_students();
+            break;
+        case 2:
+            show_teachers();
+            break;
+        case 3:
+            change_student_password();
+            break;
+        case 4:
+            change_teacher_password();
+            break;
+        case 5:
+            give_assignment();
+            break;
+        case 6:
+            see_assignment();
+            break;
+        case 7:
+            admin_data_show();
+            break;
+        case 8:
+            search_student();
+            break;
+        case 9:
+            search_teacher();
+            break;
+        case 0:
+            exit_program();
+            break;
+        default:
+            printf("\n**WRONG_INPUT**\n");
+            goto admin;
+            break;
+    }
+}
+
+// Function to change student password
+void change_student_password() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    char id[10];
+    char password[10];
+    struct student s;
+    FILE *fp, *ft;
+
+    printf("\nEnter ID: ");
+    scanf("%s", id);
+    printf("\nEnter Old Password: ");
+    password_taker(password);
+
+    fp = fopen("stu.txt", "r+");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
         return;
     }
 
     int found = 0;
     while (fread(&s, sizeof(s), 1, fp)) {
-        if (strcmp(id, s.id) == 0) {
+        if (strcmp(id, s.id) == 0 && strcmp(password, s.password) == 0) {
             found = 1;
-            printf("\nEnter the new password for student %s: ", s.name);
-            scanf("%s", new_password);
-            strcpy(s.password, new_password);
+            printf("\n**FOUND**\n");
+
+            printf("\nEnter New Password: ");
+            password_taker(s.password);
+
+            fseek(fp, -sizeof(s), SEEK_CUR);
+            fwrite(&s, sizeof(s), 1, fp);
+            fclose(fp);
+            break;
         }
-        fwrite(&s, sizeof(s), 1, temp_fp);
     }
 
-    fclose(fp);
-    fclose(temp_fp);
-
-    remove("stu.txt");
-    rename("temp.txt", "stu.txt");
-
-    if (found) {
-        printf("\nPassword changed successfully for student with ID %s.\n", id);
+    if (found == 0) {
+        printf("\n**NO SUCH USER FOUND**\n\n");
     } else {
-        printf("\nStudent with ID %s not found.\n", id);
+        printf("\n***PASSWORD CHANGED SUCCESSFULLY***\n\n");
     }
 }
 
+// Function to change teacher password
 void change_teacher_password() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
     char id[10];
-    char new_password[10];
+    char password[10];
+    struct teach f;
+    FILE *fp, *ft;
 
-    printf("\nEnter the ID of the teacher whose password you want to change: ");
+    printf("\nEnter ID: ");
     scanf("%s", id);
+    printf("\nEnter Old Password: ");
+    password_taker(password);
 
-    struct teach t;
-    FILE *fp, *temp_fp;
-    fp = fopen("teacher.txt", "r");
-    temp_fp = fopen("temp.txt", "w");
-    if (fp == NULL || temp_fp == NULL) {
-        printf("\n**ERROR IN READING/WRITING DATA**");
+    fp = fopen("teacher.txt", "r+");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
         return;
     }
 
     int found = 0;
-    while (fread(&t, sizeof(t), 1, fp)) {
-        if (strcmp(id, t.id) == 0) {
+    while (fread(&f, sizeof(f), 1, fp)) {
+        if (strcmp(id, f.id) == 0 && strcmp(password, f.password) == 0) {
             found = 1;
-            printf("\nEnter the new password for teacher %s: ", t.name);
-            scanf("%s", new_password);
-            strcpy(t.password, new_password);
+            printf("\n**FOUND**\n");
+
+            printf("\nEnter New Password: ");
+            password_taker(f.password);
+
+            fseek(fp, -sizeof(f), SEEK_CUR);
+            fwrite(&f, sizeof(f), 1, fp);
+            fclose(fp);
+            break;
         }
-        fwrite(&t, sizeof(t), 1, temp_fp);
     }
 
-    fclose(fp);
-    fclose(temp_fp);
-
-    remove("teacher.txt");
-    rename("temp.txt", "teacher.txt");
-
-    if (found) {
-        printf("\nPassword changed successfully for teacher with ID %s.\n", id);
+    if (found == 0) {
+        printf("\n**NO SUCH USER FOUND**\n\n");
     } else {
-        printf("\nTeacher with ID %s not found.\n", id);
+        printf("\n***PASSWORD CHANGED SUCCESSFULLY***\n\n");
     }
 }
 
-void password_taker(char password[]) {
-    char ch;
-    int i = 0;
+// Function to show student data
+void show_students() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
 
-    while (1) {
-        ch = getch(); 
-        if (ch == 13) { // Enter key
-            password[i] = '\0';
+    struct student f;
+    FILE *fp;
+
+    fp = fopen("stu.txt", "r");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    while (fread(&f, sizeof(f), 1, fp)) {
+        printf("\nID: %s\nPassword: %s\nName: %s\nPhone Number: %s\nFaculty: %s\n", f.id, f.password, f.name, f.num, f.faculty);
+    }
+    fclose(fp);
+}
+
+// Function to show teacher data
+void show_teachers() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    struct teach f;
+    FILE *fp;
+
+    fp = fopen("teacher.txt", "r");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    while (fread(&f, sizeof(f), 1, fp)) {
+        printf("\nID: %s\nPassword: %s\nName: %s\nPhone Number: %s\nSubject: %s\n", f.id, f.password, f.name, f.num, f.sub);
+    }
+    fclose(fp);
+}
+
+// Function to give assignment
+void give_assignment() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    struct assign f;
+    FILE *fp;
+
+    fp = fopen("assign.txt", "a");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    printf("\nEnter Assignment for subject1: ");
+    scanf("%s", f.sub1);
+
+    printf("\nEnter Assignment for subject2: ");
+    scanf("%s", f.sub2);
+
+    printf("\nEnter Assignment for subject3: ");
+    scanf("%s", f.sub3);
+
+    printf("\nEnter Assignment for subject4: ");
+    scanf("%s", f.sub4);
+
+    printf("\nEnter Assignment for subject5: ");
+    scanf("%s", f.sub5);
+
+    printf("\nEnter Assignment for subject6: ");
+    scanf("%s", f.sub6);
+
+    fwrite(&f, sizeof(f), 1, fp);
+    fclose(fp);
+}
+
+// Function to see assignment
+void see_assignment() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    struct assign f;
+    FILE *fp;
+
+    fp = fopen("assign.txt", "r");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    printf("\nAssignment for subject1: %s\n", f.sub1);
+    printf("Assignment for subject2: %s\n", f.sub2);
+    printf("Assignment for subject3: %s\n", f.sub3);
+    printf("Assignment for subject4: %s\n", f.sub4);
+    printf("Assignment for subject5: %s\n", f.sub5);
+    printf("Assignment for subject6: %s\n", f.sub6);
+
+    fclose(fp);
+}
+
+// Function to show admin data
+void admin_data_show() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    struct admin f;
+    FILE *fp;
+
+    fp = fopen("adm.txt", "r");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    while (fread(&f, sizeof(f), 1, fp)) {
+        printf("\nID: %s\nPassword: %s\nName: %s\n", f.id, f.password, f.name);
+    }
+    fclose(fp);
+}
+
+// Function to search for a student
+void search_student() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    struct student f;
+    FILE *fp;
+    char id[10];
+
+    printf("\nEnter ID: ");
+    scanf("%s", id);
+
+    fp = fopen("stu.txt", "r");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    int found = 0;
+    while (fread(&f, sizeof(f), 1, fp)) {
+        if (strcmp(id, f.id) == 0) {
+            found = 1;
+            printf("\nID: %s\nPassword: %s\nName: %s\nPhone Number: %s\nFaculty: %s\n", f.id, f.password, f.name, f.num, f.faculty);
             break;
-        } else if (ch == 8) { // Backspace
+        }
+    }
+
+    if (found == 0) {
+        printf("\n**NO SUCH USER FOUND**\n\n");
+    }
+
+    fclose(fp);
+}
+
+// Function to search for a teacher
+void search_teacher() {
+    system("cls"); // Assuming Windows, use "clear" for Unix-like systems
+    signin();
+
+    struct teach f;
+    FILE *fp;
+    char id[10];
+
+    printf("\nEnter ID: ");
+    scanf("%s", id);
+
+    fp = fopen("teacher.txt", "r");
+    if (fp == NULL) {
+        printf("\n**ERROR IN READING DATA**\n");
+        return;
+    }
+
+    int found = 0;
+    while (fread(&f, sizeof(f), 1, fp)) {
+        if (strcmp(id, f.id) == 0) {
+            found = 1;
+            printf("\nID: %s\nPassword: %s\nName: %s\nPhone Number: %s\nSubject: %s\n", f.id, f.password, f.name, f.num, f.sub);
+            break;
+        }
+    }
+
+    if (found == 0) {
+        printf("\n**NO SUCH USER FOUND**\n\n");
+    }
+
+    fclose(fp);
+}
+
+// Function to take password input securely
+void password_taker(char password[]) {
+    int i = 0;
+    char ch;
+    while (i < 10) {
+        ch = getch();
+        if (ch == 13)
+            break;
+        else if (ch == 8) {
             if (i > 0) {
                 i--;
-                printf("\b \b"); 
+                printf("\b \b");
             }
         } else {
             password[i++] = ch;
-            printf("*"); 
+            printf("*");
         }
     }
+    password[i] = '\0';
 }
 
-void take_attendance_student(char id[]) {
-    FILE *fp;
-    fp = fopen("attendance_student.txt", "a");
-
-    if (fp == NULL) {
-        printf("\n**ERROR IN OPENING FILE**\n\n");
-        return;
-    }
-
-    char attendance;
-    printf("\nPresent (P) or Absent (A): ");
-    scanf(" %c", &attendance);
-
-    fprintf(fp, "%s %c\n", id, attendance);
-
-    fclose(fp);
-}
-
-void display_attendance_student(char id[]) {
-    FILE *fp;
-    fp = fopen("attendance_student.txt", "r");
-
-    if (fp == NULL) {
-        printf("\n**ERROR IN OPENING FILE**\n\n");
-        return;
-    }
-
-    char student_id[10];
-    char attendance;
-    int total_classes = 0, present = 0, absent = 0;
-
-    while (fscanf(fp, "%s %c", student_id, &attendance) != EOF) {
-        if (strcmp(id, student_id) == 0) {
-            total_classes++;
-            if (attendance == 'P') {
-                present++;
-            } else if (attendance == 'A') {
-                absent++;
-            }
-        }
-    }
-
-    fclose(fp);
-
-    if (total_classes == 0) {
-        printf("\nNo attendance records found for student with ID %s.\n", id);
-    } else {
-        printf("\nTotal classes: %d\n", total_classes);
-        printf("Present: %d\n", present);
-        printf("Absent: %d\n", absent);
-    }
-}
-
-void take_attendance_teacher(char id[]) {
-    FILE *fp;
-    fp = fopen("attendance_teacher.txt", "a");
-
-    if (fp == NULL) {
-        printf("\n**ERROR IN OPENING FILE**\n\n");
-        return;
-    }
-
-    char attendance;
-    printf("\nPresent (P) or Absent (A): ");
-    scanf(" %c", &attendance);
-
-    fprintf(fp, "%s %c\n", id, attendance);
-
-    fclose(fp);
-}
-
-void display_attendance_teacher(char id[]) {
-    FILE *fp;
-    fp = fopen("attendance_teacher.txt", "r");
-
-    if (fp == NULL) {
-        printf("\n**ERROR IN OPENING FILE**\n\n");
-        return;
-    }
-
-    char teacher_id[10];
-    char attendance;
-    int total_classes = 0, present = 0, absent = 0;
-
-    while (fscanf(fp, "%s %c", teacher_id, &attendance) != EOF) {
-        if (strcmp(id, teacher_id) == 0) {
-            total_classes++;
-            if (attendance == 'P') {
-                present++;
-            } else if (attendance == 'A') {
-                absent++;
-            }
-        }
-    }
-
-    fclose(fp);
-
-    if (total_classes == 0) {
-        printf("\nNo attendance records found for teacher with ID %s.\n", id);
-    } else {
-        printf("\nTotal classes: %d\n", total_classes);
-        printf("Present: %d\n", present);
-        printf("Absent: %d\n", absent);
-    }
-}
-
-void exit_program(){
-    system("cls");
-    printf("\n\n\t-------------LEAVING ALREADY------------\n");
-    printf("\tCreated  by:\n");
-    printf("\tABHISHEK PANTHEE\t(080BCT002)\n");
-    printf("\tSULAV PAUDEL\t(080BCT046)\n");
-    printf("\tRakesh Kumar Yadav\t(080BCT030)\n");
-    printf("\tPRASIDDHA RAJ PAUDEL\t(080BCT027)\n");
-    exitsed();
+// Function to exit the program
+void exit_program() {
+    printf("\nTHANK YOU FOR USING LMS\n");
     exit(0);
 }
